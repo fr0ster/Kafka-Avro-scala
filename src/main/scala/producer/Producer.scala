@@ -11,7 +11,7 @@ import org.apache.avro.specific.SpecificDatumWriter
 import java.io.ByteArrayOutputStream
 
 import org.apache.avro.io._
-import kafka.producer.{KeyedMessage, Producer, ProducerConfig}
+// import kafka.producer.{KeyedMessage, Producer, ProducerConfig}
 
 import scala.io.Source
 
@@ -25,7 +25,7 @@ class KafkaProducer() {
   props.put("serializer.class", "kafka.serializer.DefaultEncoder")
   props.put("client.id", UUID.randomUUID().toString())
 
-  private val producer = new Producer[String, Array[Byte]](new ProducerConfig(props))
+  // private val producer = new Producer[String, Array[Byte]](new ProducerConfig(props))
 
   //Read avro schema file and
   val schema: Schema = new Parser().parse(Source.fromURL(getClass.getResource("/schema.avsc")).mkString)
@@ -50,9 +50,9 @@ class KafkaProducer() {
 
         val serializedBytes: Array[Byte] = out.toByteArray()
 
-        new KeyedMessage[String, Array[Byte]](topic, serializedBytes)
+        // new KeyedMessage[String, Array[Byte]](topic, serializedBytes)
       }
-      producer.send(queueMessages: _*)
+      // producer.send(queueMessages: _*)
     } catch {
       case ex: Exception =>
         println(ex.printStackTrace().toString)

@@ -28,3 +28,5 @@ logs/*
 project/metals.sbt
 project/project/
 .vscode/
+
+.fake

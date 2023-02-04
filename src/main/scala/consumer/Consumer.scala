@@ -1,21 +1,19 @@
 package consumer
 
 import java.util.Properties
-
-import domain.User
-import org.apache.avro.Schema
-import org.apache.avro.io.DatumReader
-import org.apache.avro.io.Decoder
-import org.apache.avro.specific.SpecificDatumReader
-import org.apache.avro.generic.GenericRecord
-import org.apache.avro.io.DecoderFactory
-import kafka.consumer.{Consumer, ConsumerConfig, ConsumerTimeoutException, Whitelist}
-import kafka.serializer.DefaultDecoder
-
 import scala.io.Source
 
+import domain.User
 
-class KafkaConsumer() {
+import org.apache.avro.Schema
+import org.apache.avro.io.{DatumReader, Decoder, DecoderFactory}
+import org.apache.avro.specific.SpecificDatumReader
+import org.apache.avro.generic.GenericRecord
+
+import org.apache.kafka.clients.consumer.{KafkaConsumer, ConsumerConfig}
+
+
+class Consumer() {
   private val props = new Properties()
 
   val groupId = "demo-topic-consumer"
@@ -28,11 +26,12 @@ class KafkaConsumer() {
   props.put("auto.commit.interval.ms", "10000")
 
   private val consumerConfig = new ConsumerConfig(props)
-  private val consumerConnector = Consumer.create(consumerConfig)
-  private val filterSpec = new Whitelist(topic)
-  private val streams = consumerConnector.createMessageStreamsByFilter(filterSpec, 1, new DefaultDecoder(), new DefaultDecoder())(0)
+  private val consumerConnector = new KafkaConsumer(props)
+  val topics = consumerConnector.listTopics()
+  // private val filterSpec = new Whitelist(topic)
+  // private val streams = consumerConnector.createMessageStreamsByFilter(filterSpec, 1, new DefaultDecoder(), new DefaultDecoder())(0)
 
-  lazy val iterator = streams.iterator()
+  // lazy val iterator = streams.iterator()
 
   val schemaString = Source.fromURL(getClass.getResource("/schema.avsc")).mkString
   // Initialize schema
@@ -63,7 +62,7 @@ class KafkaConsumer() {
     try {
       if (hasNext) {
         println("Getting message from queue.............")
-        val message: Array[Byte] = iterator.next().message()
+        val message: Array[Byte] = Array() // iterator.next().message()
         getUser(message)
       } else {
         None
@@ -73,17 +72,17 @@ class KafkaConsumer() {
         None
     }
 
-  private def hasNext: Boolean =
-    try
-      iterator.hasNext()
-    catch {
-      case timeOutEx: ConsumerTimeoutException =>
-        false
-      case ex: Exception => ex.printStackTrace()
-        println("Got error when reading message ")
-        false
-    }
+  private def hasNext: Boolean = ???
+    // try
+    //    iterator.hasNext()
+    // catch {
+    //   case timeOutEx: ConsumerTimeoutException =>
+    //     false
+    //   case ex: Exception => ex.printStackTrace()
+    //     println("Got error when reading message ")
+    //     false
+    // }
 
-  def close(): Unit = consumerConnector.shutdown()
+  def close(): Unit = consumerConnector.close()
 
 }
