@@ -2,7 +2,7 @@ name := "kafka-avro"
 
 version := "1.0"
 
-scalaVersion := "3.2.1"
+scalaVersion := "3.2.2"
 
 libraryDependencies ++= Seq(
       "org.apache.avro" % "avro" % "1.11.1",
