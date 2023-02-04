@@ -11,7 +11,7 @@ object MainApp extends ZIOAppDefault {
       .schedule(Schedule.fixed(2.seconds))
       .mapZIO { random =>
         Producer.produce[Any, Long, String](
-          topic = "random",
+          topic = "topic",
           key = random % 4,
           value = random.toString,
           keySerializer = Serde.long,
@@ -22,7 +22,7 @@ object MainApp extends ZIOAppDefault {
 
   val consumer: ZStream[Consumer, Throwable, Nothing] =
     Consumer
-      .subscribeAnd(Subscription.topics("random"))
+      .subscribeAnd(Subscription.topics("topic"))
       .plainStream(Serde.long, Serde.string)
       .tap(r => Console.printLine(r.value))
       .map(_.offset)
