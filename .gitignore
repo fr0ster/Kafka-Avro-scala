@@ -24,6 +24,7 @@ logs/*
 .cache-main
 .cache-tests
 .bloop/
+.bsp/
 .metals/
 project/metals.sbt
 project/project/
