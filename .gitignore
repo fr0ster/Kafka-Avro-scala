@@ -23,3 +23,8 @@ logs/*
 .settings/
 .cache-main
 .cache-tests
+.bloop/
+.metals/
+project/metals.sbt
+project/project/
+.vscode/

@@ -49,7 +49,7 @@ class KafkaConsumer() {
     val user = User(userData.get("id").toString.toInt, userData.get("name").toString, try {
       Some(userData.get("email").toString)
     } catch {
-      case _ => None
+      case _ : Throwable => None
     })
     Some(user)
   }
