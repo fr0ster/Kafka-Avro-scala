@@ -29,7 +29,7 @@ class Consumer() {
   private val consumerConnector = new KafkaConsumer(props)
   val topics = consumerConnector.listTopics()
   // private val filterSpec = new Whitelist(topic)
-  // private val streams = consumerConnector.createMessageStreamsByFilter(filterSpec, 1, new DefaultDecoder(), new DefaultDecoder())(0)
+  // private val streams = consumerConnector.createMessage StreamsByFilter(filterSpec, 1, new DefaultDecoder(), new DefaultDecoder())(0)
 
   // lazy val iterator = streams.iterator()
 

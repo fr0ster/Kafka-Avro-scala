@@ -4,17 +4,17 @@ import scala.concurrent.duration._
 
 object Main extends IOApp.Simple {
   val run: IO[Unit] = {
-    def processRecord(record: ConsumerRecord[String, String]): IO[(String, String)] =
+    def processRecord(record: ConsumerRecord[Long, String]): IO[(Long, String)] =
       IO.pure(record.key -> record.value)
 
     val consumerSettings =
-      ConsumerSettings[IO, String, String]
+      ConsumerSettings[IO, Long, String]
         .withAutoOffsetReset(AutoOffsetReset.Earliest)
         .withBootstrapServers("localhost:9092")
-        .withGroupId("group")
+        .withGroupId("fs2-group")
 
     val producerSettings =
-      ProducerSettings[IO, String, String]
+      ProducerSettings[IO, Long, String]
         .withBootstrapServers("localhost:9092")
 
     val stream =
@@ -24,7 +24,8 @@ object Main extends IOApp.Simple {
         .mapAsync(25) { committable =>
           processRecord(committable.record)
             .map { case (key, value) =>
-              val record = ProducerRecord("topic", key, value)
+              val record = ProducerRecord("quickstart", key, value)
+              IO.println(value)
               ProducerRecords.one(record, committable.offset)
             }
         }

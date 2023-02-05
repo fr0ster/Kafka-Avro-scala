@@ -4,7 +4,7 @@ import zio.kafka.producer.{Producer, ProducerSettings}
 import zio.kafka.serde._
 import zio.stream.ZStream
 
-object MainApp extends ZIOAppDefault {
+object MainApp extends ZIOAppDefault:
   val producer: ZStream[Producer, Throwable, Nothing] =
     ZStream
       .repeatZIO(Random.nextIntBetween(0, Int.MaxValue))
@@ -22,7 +22,7 @@ object MainApp extends ZIOAppDefault {
 
   val consumer: ZStream[Consumer, Throwable, Nothing] =
     Consumer
-      .subscribeAnd(Subscription.topics("topic"))
+      .subscribeAnd(Subscription.topics("quickstart"))
       .plainStream(Serde.long, Serde.string)
       .tap(r => Console.printLine(r.value))
       .map(_.offset)
@@ -40,7 +40,7 @@ object MainApp extends ZIOAppDefault {
   def consumerLayer =
     ZLayer.scoped(
       Consumer.make(
-        ConsumerSettings(List("localhost:9092")).withGroupId("group")
+        ConsumerSettings(List("localhost:9092")).withGroupId("zio-group")
       )
     )
 
@@ -49,4 +49,3 @@ object MainApp extends ZIOAppDefault {
       .merge(consumer)
       .runDrain
       .provide(producerLayer, consumerLayer)
-}
