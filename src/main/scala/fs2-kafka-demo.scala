@@ -2,7 +2,7 @@ import cats.effect.{IO, IOApp}
 import fs2.kafka._
 import scala.concurrent.duration._
 
-object Main extends IOApp.Simple {
+object Fs2MainApp extends IOApp.Simple {
   val run: IO[Unit] = {
     def processRecord(record: ConsumerRecord[Long, String]): IO[(Long, String)] =
       IO.pure(record.key -> record.value)
@@ -25,7 +25,6 @@ object Main extends IOApp.Simple {
           processRecord(committable.record)
             .map { case (key, value) =>
               val record = ProducerRecord("quickstart", key, value)
-              IO.println(value)
               ProducerRecords.one(record, committable.offset)
             }
         }

@@ -4,7 +4,7 @@ import zio.kafka.producer.{Producer, ProducerSettings}
 import zio.kafka.serde._
 import zio.stream.ZStream
 
-object MainApp extends ZIOAppDefault:
+object ZioMainApp extends ZIOAppDefault:
   val producer: ZStream[Producer, Throwable, Nothing] =
     ZStream
       .repeatZIO(Random.nextIntBetween(0, Int.MaxValue))
