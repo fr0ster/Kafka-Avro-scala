@@ -1,19 +1,21 @@
+package producer
+
 import zio._
-// import zio.kafka.consumer._
 import zio.kafka.producer.{Producer, ProducerSettings}
 import zio.kafka.serde._
 import zio.stream.ZStream
+import domain._
 
-class ZioStreamProducer(topic: String, urls: List[String], stream: ZStream[Any,Nothing,Int]):
+class ZioAvroProducer(topic: String, urls: List[String], stream: ZStream[Any,Nothing,(Long, Base)]):
   val producer: ZStream[Producer, Throwable, Nothing] =
     stream
-      .mapZIO { random =>
-        Producer.produce[Any, Long, String](
+      .mapZIO { data =>
+        Producer.produce[Any, Long, Array[Byte]](
           topic = topic,
-          key = random % 4,
-          value = random.toString,
+          key = data(0),
+          value = setData(data(1)),
           keySerializer = Serde.long,
-          valueSerializer = Serde.string
+          valueSerializer = Serde.byteArray
         )
       }
       .drain

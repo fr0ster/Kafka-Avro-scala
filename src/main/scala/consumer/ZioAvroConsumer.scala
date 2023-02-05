@@ -1,15 +1,24 @@
+package consumer
+
 import zio._
 import zio.kafka.consumer._
 import zio.kafka.producer.{Producer, ProducerSettings}
 import zio.kafka.serde._
 import zio.stream.ZStream
+import domain._
+import org.apache.kafka.clients.consumer.ConsumerRecord
 
-class ZioConsumer(topic: String, group: String, urls: List[String]):
+class ZioAvroConsumer[T <: Base](
+    topic: String,
+    group: String,
+    urls: List[String],
+    f: Base => zio.ZIO[zio.kafka.consumer.Consumer, Throwable, Any]
+):
   val consumer: ZStream[Consumer, Throwable, Nothing] =
     Consumer
       .subscribeAnd(Subscription.topics(topic))
-      .plainStream(Serde.long, Serde.string)
-      .tap(r => Console.printLine(r.value))
+      .plainStream(Serde.long, Serde.byteArray)
+      .tap(r => f(getData(r.value)))
       .map(_.offset)
       .aggregateAsync(Consumer.offsetBatches)
       .mapZIO(_.commit)
@@ -23,6 +32,5 @@ class ZioConsumer(topic: String, group: String, urls: List[String]):
     )
 
   def run =
-    consumer
-      .runDrain
+    consumer.runDrain
       .provide(consumerLayer)
