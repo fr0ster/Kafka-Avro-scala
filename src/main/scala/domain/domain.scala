@@ -3,7 +3,6 @@ package domain
 import com.sksamuel.avro4s.{AvroSchema, AvroOutputStream, AvroInputStream}
 import java.io.{ByteArrayOutputStream}
 import org.apache.avro.io.Encoder
-import java.io.File
 
 sealed trait Base
 case class User(id: Int, name: String, email: Option[String]) extends Base

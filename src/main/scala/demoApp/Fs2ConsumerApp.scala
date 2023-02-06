@@ -3,4 +3,4 @@ import fs2.kafka._
 import scala.concurrent.duration._
 
 object Fs2ConsumerApp extends IOApp.Simple:
-  val run: IO[Unit] = (new Fs2Consumer("topic", "zio-group", "localhost:9092", {(_, value) => println(value)})).run
+  val run: IO[Unit] = (new Fs2AvroConsumer("topic", "zio-group", "localhost:9092", {(_, value) => println(value)})).run

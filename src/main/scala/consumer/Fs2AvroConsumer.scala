@@ -14,11 +14,8 @@ class Fs2AvroConsumer[T <: Base](topic: String, group: String, url: String, f: (
         .withBootstrapServers(url)
         .withGroupId(group)
 
-    val rawstream =
-      KafkaConsumer.stream(consumerSettings)
-
     val stream =
-      rawstream
+      KafkaConsumer.stream(consumerSettings)
         .subscribeTo(topic)
         .records
         .mapAsync(25) { committable =>
