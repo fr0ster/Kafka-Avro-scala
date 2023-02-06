@@ -4,6 +4,8 @@ version := "1.0"
 
 scalaVersion := "3.2.2"
 
+scalacOptions += "-Ykind-projector:underscores"
+
 libraryDependencies ++= Seq(
       "com.sksamuel.avro4s" %% "avro4s-core" % "5.0.3",
       "com.github.fd4s" %% "fs2-kafka" % "3.0.0-M8",
