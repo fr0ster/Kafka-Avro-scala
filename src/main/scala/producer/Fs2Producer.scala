@@ -1,3 +1,16 @@
+// Thanks to Alexey Shcherbakov @ajIeks for this code
+// https://scastie.scala-lang.org/D7ftQ4iISbSXtHPbuANruQ
+// вот так будет каноничнее, вынести сериализацию в соответствующий
+// класс + никаких var внутри, а делаеv zipWithIndex
+// https://scastie.scala-lang.org/PTf8gY2kSCyOjTHg6EfW7Q
+// вот так можешь, создаешь методом make продьюсера в эффекте,
+// он создает очередь, в которую через метод publish можно заталкивать T
+// быть запустить еше run, чтоб очередь начала разгребаться
+// либо как тут https://scastie.scala-lang.org/DoLvEJ1xRiO8shbIlw5S6Q
+// make2, сразу завернуть все в ресурс
+// https://scastie.scala-lang.org/eJzdASDpSeqXHvd39ZFxEA
+// попрвил зависимости и даже не краснит )
+
 import cats.effect.{IO, Resource, OutcomeIO}
 import fs2.kafka._
 import cats.effect.std.Queue
