@@ -1,14 +1,15 @@
 import cats.effect.{IO, IOApp}
 import fs2.kafka._
 import scala.concurrent.duration._
+import domain._
 
-class Fs2Consumer(topic: String, group: String, url: String, f: (key: Long, value: String) => Unit):
+class Fs2AvroConsumer[T <: Base](topic: String, group: String, url: String, f: (key: Long, value: T) => Unit):
   val run: IO[Unit] = {
-    def processRecord(record: ConsumerRecord[Long, String]): IO[(Long, String)] =
+    def processRecord(record: ConsumerRecord[Long, Array[Byte]]): IO[(Long, Array[Byte])] =
       IO.pure(record.key -> record.value)
 
     val consumerSettings =
-      ConsumerSettings[IO, Long, String]
+      ConsumerSettings[IO, Long, Array[Byte]]
         .withAutoOffsetReset(AutoOffsetReset.Earliest)
         .withBootstrapServers(url)
         .withGroupId(group)
@@ -23,7 +24,7 @@ class Fs2Consumer(topic: String, group: String, url: String, f: (key: Long, valu
         .mapAsync(25) { committable =>
           processRecord(committable.record)
             .map { case (key, value) =>
-              f(key, value)
+              f(key, getData[T](value))
             }
         }
 
