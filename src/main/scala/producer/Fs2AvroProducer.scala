@@ -20,7 +20,7 @@ class Fs2AvroProducer[T <: Base](topic: String, url: String, stream: fs2.Stream[
             }
         }
         .through(KafkaProducer.pipe(producerSettings))
-        .map(_.passthrough)
+        // .map(_.passthrough)
         // .through(commitBatchWithin(500, 15.seconds))
 
     def run = prodstream.compile.drain

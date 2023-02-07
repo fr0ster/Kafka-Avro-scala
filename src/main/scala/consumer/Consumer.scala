@@ -13,7 +13,7 @@ import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.consumer.{KafkaConsumer, ConsumerConfig}
 
 
-class Consumer() {
+class MyKafkaConsumer() {
   private val props = new Properties()
 
   val groupId = "demo-topic-consumer"

@@ -1,10 +1,10 @@
 package demoApp
 
-import consumer.Consumer
+import consumer.MyKafkaConsumer
 
 object ConsumerApp extends App {
 
-  val consumer = new Consumer()
+  val consumer = new MyKafkaConsumer()
 
   while (true) {
     consumer.read() match {

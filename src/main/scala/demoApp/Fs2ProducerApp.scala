@@ -8,6 +8,12 @@ import fs2._
 
 object Fs2ProducerApp extends IOApp.Simple:
   def run =
-    val stream = Stream.range(1,99999).mapAsync(25){ num => IO.pure(User(num, "one", None)) }
-    val producer = new Fs2AvroProducer[User]("topic", "localhost:9092", stream)
-    producer.run
+    val _stream = Stream.range(1,99999).mapAsync(25){ num => IO.pure(User(num, "one", None)) }
+    val _producer = new Fs2AvroProducer[User]("topic", "localhost:9092", _stream)
+    _producer.run
+    // val stream = Stream.range(1,42).mapAsync(25){ num => IO.pure(User(num, "one", None)) }.through(producer.flatMap(x => x.publish()))
+    // producer.flatMap(x => x.compile.drain)
+  
+  val producer = Fs2Producer.make[User]("topic", "localhost:9092")
+  val stream = Stream(1,42).mapAsync(25){ num => producer.flatMap(x => x.publish(User(num, "one", None))) }
+  val resurce = producer.map(x => x.run)

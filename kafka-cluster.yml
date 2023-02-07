@@ -1,0 +1,143 @@
+version: '2'
+ 
+services:
+
+    zookeeper1:
+        image: wurstmeister/zookeeper:3.4.6
+
+    zookeeper2:
+        image: wurstmeister/zookeeper:3.4.6
+
+    kafka1:
+        image: wurstmeister/kafka
+        env_file:
+            - kafka/kafka-variables.env
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka1
+        depends_on:
+        - zookeeper1
+        - zookeeper2
+
+    kafka2:
+        image: wurstmeister/kafka
+        env_file:
+            - kafka/kafka-variables.env
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka2
+        depends_on:
+        - zookeeper1
+        - zookeeper2
+
+    kafka3:
+        image: wurstmeister/kafka
+        env_file:
+            - kafka/kafka-variables.env
+        environment:
+            - KAFKA_ADVERTISED_HOST_NAME=kafka3
+        depends_on:
+        - zookeeper1
+        - zookeeper2
+
+    mongo-db:
+        image: mongo:4.0
+        expose:
+            - "27017"
+        ports:
+            - "27017:27017"
+        environment:
+            MONGO_DATA_DIR: /data/db
+            MONGO_LOG_DIR: /dev/null
+
+    # consumer-mongo-db:
+    #     build:
+    #         context: consumer-mongo-db
+    #     environment:
+    #         mongoURL: mongodb://mongo-db:27017
+    #         dbName: example_db
+    #         collectionName: example_coll
+    #         kafkaURL: kafka1:9092,kafka2:9092,kafka3:9092
+    #         topic: topic1
+    #         GroupID: mongo-group
+    #     depends_on:
+    #         - zookeeper1
+    #         - zookeeper2
+    #         - kafka1
+    #         - kafka2
+    #         - kafka3
+    #         - mongo-db
+
+    # consumer-mongo-db-fast:
+    #     build:
+    #         context: consumer-mongo-db
+    #     environment:
+    #         mongoURL: mongodb://mongo-db:27017
+    #         dbName: example_db
+    #         collectionName: example_coll
+    #         kafkaURL: kafka1:9092,kafka2:9092,kafka3:9092
+    #         topic: topic2
+    #         GroupID: mongo-group
+    #     depends_on:
+    #         - zookeeper1
+    #         - zookeeper2
+    #         - kafka1
+    #         - kafka2
+    #         - kafka3
+    #         - mongo-db
+
+    # consumer-logger:
+    #     build:
+    #         context: consumer-logger
+    #     restart: on-failure
+    #     environment:
+    #         kafkaURL: kafka1:9092,kafka2:9092,kafka3:9092
+    #         topic: topic1
+    #         GroupID: logger-group
+    #     depends_on:
+    #         - zookeeper1
+    #         - zookeeper2
+    #         - kafka1
+    #         - kafka2
+    #         - kafka3
+
+    # producer-random:
+    #     build:
+    #         context: producer-random
+    #     restart: on-failure
+    #     environment:
+    #         kafkaURL: kafka1:9092
+    #         topic: topic1
+    #     depends_on:
+    #         - zookeeper1
+    #         - zookeeper2
+    #         - kafka1
+    #         - kafka2
+    #         - kafka3
+
+    # consumer-logger-fast:
+    #     build:
+    #         context: consumer-logger
+    #     restart: on-failure
+    #     environment:
+    #         kafkaURL: kafka1:9092,kafka2:9092,kafka3:9092
+    #         topic: topic2
+    #         GroupID: logger-group
+    #     depends_on:
+    #         - zookeeper1
+    #         - zookeeper2
+    #         - kafka1
+    #         - kafka2
+    #         - kafka3
+
+    # producer-random-fast:
+    #     build:
+    #         context: producer-random-fast
+    #     restart: on-failure
+    #     environment:
+    #         kafkaURL: kafka1:9092
+    #         topic: topic2
+    #     depends_on:
+    #         - zookeeper1
+    #         - zookeeper2
+    #         - kafka1
+    #         - kafka2
+    #         - kafka3
