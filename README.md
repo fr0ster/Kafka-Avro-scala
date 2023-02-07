@@ -4,7 +4,7 @@ Usage
 
 Start kafka in docker
 https://developer.confluent.io/quickstart/kafka-docker/
-```docker compose up -d -f ./kafka-single.yml``` or ```docker compose up -d -f ./kafka-cluster.yml```
+```docker compose -f ./kafka-single.yml up -d``` or ```docker compose -f ./kafka-cluster.yml up -d```
 
 Create a topic
 docker exec broker \
